@@ -1,0 +1,22 @@
+{
+  "name": "challenge-toolbox-server",
+  "version": "1.0.0",
+  "description": "API Rest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brquispe/challenge-toolbox.git"
+  },
+  "author": "Braian Quispe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brquispe/challenge-toolbox/issues"
+  },
+  "homepage": "https://github.com/brquispe/challenge-toolbox#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
