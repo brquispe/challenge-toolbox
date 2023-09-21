@@ -16,12 +16,11 @@ class CSVParser {
           return prev;
         }
         const mappedProps = {};
-
-        if (rowProps.some((prop) => !prop)) {
+        if (rowProps.some((prop) => prop.trim().length === 0)) {
           return prev;
         }
         rowProps.forEach((prop, i) => {
-          mappedProps[headerProps[i]] = prop;
+          mappedProps[headerProps[i]] = prop.trim();
         });
 
         prev.push(mappedProps);
