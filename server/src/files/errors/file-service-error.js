@@ -1,7 +1,7 @@
 class FileServiceError extends Error {
-  constructor(message) {
+  constructor (message) {
     super(message)
   }
 }
 
-module.exports = FileServiceError;
+module.exports = FileServiceError

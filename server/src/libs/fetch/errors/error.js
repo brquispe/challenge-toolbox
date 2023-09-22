@@ -1,7 +1,7 @@
 class FetchError extends Error {
-  constructor(message = 'Could not fetch', statusCode = 400) {
-    super(message, statusCode);
+  constructor (message = 'Could not fetch', statusCode = 400) {
+    super(message, statusCode)
   }
 }
 
-module.exports = FetchError;
+module.exports = FetchError

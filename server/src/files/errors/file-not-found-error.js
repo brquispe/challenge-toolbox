@@ -1,7 +1,7 @@
 class FileNotFoundError extends Error {
-  constructor() {
-    super("File not found!");
+  constructor () {
+    super('File not found!')
   }
 }
 
-module.exports = FileNotFoundError;
+module.exports = FileNotFoundError

@@ -1,4 +1,4 @@
-const CSVParseError = require("../errors/csv-parse-error");
+const CSVParseError = require('../errors/csv-parse-error')
 
 class CSVParser {
   /**
@@ -6,31 +6,31 @@ class CSVParser {
    * @param {string} value
    * @returns {T[]}
    */
-  static parse(value) {
+  static parse (value) {
     try {
-      const [headers, ...values] = value.split("\n");
-      const headerProps = headers.split(",");
+      const [headers, ...values] = value.split('\n')
+      const headerProps = headers.split(',')
       const parsedCSV = values.reduce((prev, row) => {
-        const rowProps = row.split(",");
+        const rowProps = row.split(',')
         if (rowProps.length !== headerProps.length) {
-          return prev;
+          return prev
         }
-        const mappedProps = {};
+        const mappedProps = {}
         if (rowProps.some((prop) => prop.trim().length === 0)) {
-          return prev;
+          return prev
         }
         rowProps.forEach((prop, i) => {
-          mappedProps[headerProps[i]] = prop.trim();
-        });
+          mappedProps[headerProps[i]] = prop.trim()
+        })
 
-        prev.push(mappedProps);
-        return prev;
-      }, []);
-      return parsedCSV;
+        prev.push(mappedProps)
+        return prev
+      }, [])
+      return parsedCSV
     } catch (err) {
-      throw new CSVParseError(err);
+      throw new CSVParseError(err)
     }
   }
 }
 
-module.exports = CSVParser;
+module.exports = CSVParser

@@ -1,6 +1,6 @@
-const https = require("https");
-const NotFoundFetchError = require("./errors/not-found");
-const FetchError = require("./errors/error");
+const https = require('https')
+const NotFoundFetchError = require('./errors/not-found')
+const FetchError = require('./errors/error')
 
 /**
  * HTTPS Node.js module wrapper for fetching data easily
@@ -12,36 +12,36 @@ class FetchApi {
    * @param {import('https').RequestOptions} [options]
    * @returns {Promise<T>}
    */
-  static get(url, options, parseJSON = true) {
+  static get (url, options, parseJSON = true) {
     return new Promise((resolve, reject) => {
       https
         .get(url, options, (response) => {
-          let data = "";
+          let data = ''
 
-          response.on("data", (chunk) => {
-            data += chunk;
-          });
+          response.on('data', (chunk) => {
+            data += chunk
+          })
 
-          response.on("end", () => {
+          response.on('end', () => {
             if (parseJSON) {
-              data = JSON.parse(data);
+              data = JSON.parse(data)
             }
             if (response.statusCode !== 200) {
               // handle throwing Errors
               if (response.statusCode === 404) {
-                reject(new NotFoundFetchError(data));
+                reject(new NotFoundFetchError(data))
               }
-              reject(new FetchError(url, data));
+              reject(new FetchError(url, data))
             }
-            resolve(data);
-          });
+            resolve(data)
+          })
         })
-        .on("error", (err) => {
-          reject(err);
+        .on('error', (err) => {
+          reject(err)
         })
-        .end();
-    });
+        .end()
+    })
   }
 }
 
-module.exports = FetchApi;
+module.exports = FetchApi
