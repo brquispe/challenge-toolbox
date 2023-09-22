@@ -1,4 +1,6 @@
 const https = require("https");
+const NotFoundFetchError = require("./errors/not-found");
+const FetchError = require("./errors/error");
 
 /**
  * HTTPS Node.js module wrapper for fetching data easily
@@ -22,17 +24,24 @@ class FetchApi {
 
           response.on("end", () => {
             if (parseJSON) {
-              const jsonData = JSON.parse(data);
-              return resolve(jsonData);
+              data = JSON.parse(data);
+            }
+            if (response.statusCode !== 200) {
+              // handle throwing Errors
+              if (response.statusCode === 404) {
+                reject(new NotFoundFetchError(data));
+              }
+              reject(new FetchError(url, data));
             }
             resolve(data);
           });
         })
         .on("error", (err) => {
           reject(err);
-        });
+        })
+        .end();
     });
-  };
-};
+  }
+}
 
 module.exports = FetchApi;

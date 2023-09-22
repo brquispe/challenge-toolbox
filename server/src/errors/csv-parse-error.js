@@ -1,6 +1,6 @@
 class CSVParseError extends Error {
-  constructor(message) {
-    this.message = 'Could not parse the CSV string: ', message;
+  constructor(message = "Could not parse the CSV string: ") {
+    super(message);
   }
 }
 
