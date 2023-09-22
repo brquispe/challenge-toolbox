@@ -3,6 +3,7 @@ const FetchApi = require("../../libs/fetch");
 const CSVParser = require("../../libs/csv");
 const NotFoundFetchError = require("../../libs/fetch/errors/not-found");
 const { NotFoundError } = require("../../errors");
+const Validator = require("../../libs/validator");
 
 const options = {
   headers: {
@@ -17,7 +18,7 @@ class FilesService {
   /**
    * @returns {Promise<{ files: string[] }>}
    */
-  getFiles() {
+  getFileNames() {
     return FetchApi.get(`${this.apiUrl}/secret/files`, options);
   }
 
@@ -43,25 +44,51 @@ class FilesService {
 
   /**
    * @param {{file: string, text: string, number: string, hex: string}[][]} file
-   * @returns {{ file: string, lines: {text: string, number: string, hex: string}[] }[]}
+   * @returns {{ file: string, lines: {text: string, number: number, hex: string}[] }[]}
    */
-  formatFile(file) {
+  groupCSVFilesByFile(file) {
     return file
       .filter((line) => line.length > 0)
       .map((lines) => {
         const filename = lines[0].file.trim();
         return {
           file: filename,
-          lines: lines.map(({ file, ...rest }) => rest),
+          lines: lines.map(({ file, ...rest }) => ({
+            ...rest,
+            number: Number(rest.number),
+          })),
         };
       });
   }
 
   /**
+   * @param {string[]} data
+   */
+  formatFile(data) {
+    const parsedData = data.map((file) => CSVParser.parse(file));
+    const okValues = parsedData.map((fileLines) => {
+      const newValidLines = fileLines.filter((fileLine) =>
+        Validator.isObjectParseable(fileLine, {
+          file: { type: "string" },
+          hex: { type: "hex", length: 32 },
+          number: { type: "number" },
+          text: { type: "string" },
+        })
+      );
+
+      return newValidLines;
+    });
+
+    return this.groupCSVFilesByFile(okValues);
+  }
+
+  /**
    * @param {string} [fileName]
+   * @returns {Promise<{file: string; lines: { text: string; number: number; hex: string }[]}[]>}
    */
   async getData(fileName) {
-    const fileNames = fileName ? { files: [fileName] } : await this.getFiles();
+    const fileNames = fileName ? { files: [fileName] } : await this.getFileNames();
+    /** @type {string[]} */
     const filesData = [];
     for (const filename of fileNames.files) {
       try {
@@ -71,12 +98,8 @@ class FilesService {
         console.error(err);
       }
     }
-    const data = await Promise.all(filesData);
-    /** @type {{file: string, text: string, number: string, hex: string}[][]}  */
-    const parsedData = data.map((file) => CSVParser.parse(file));
-    const formattedFiles = this.formatFile(parsedData);
-
-    return formattedFiles;
+    const groupedFiles = this.formatFile(filesData);
+    return groupedFiles;
   }
 }
 
