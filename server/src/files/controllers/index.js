@@ -8,6 +8,15 @@ class FileController {
     this.#fileService = fileService;
   }
 
+  async getFileNames(req, res, next) {
+    try {
+      const fileNames = await this.#fileService.getFileNames();
+      res.json(fileNames);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async getData(req, res, next) {
     try {
       const fileName = req.query?.fileName;

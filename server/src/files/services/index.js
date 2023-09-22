@@ -87,7 +87,10 @@ class FilesService {
    * @returns {Promise<{file: string; lines: { text: string; number: number; hex: string }[]}[]>}
    */
   async getData(fileName) {
-    const fileNames = fileName ? { files: [fileName] } : await this.getFileNames();
+    if (fileName) {
+      return this.getFile(fileName);
+    }
+    const fileNames = await this.getFileNames();
     /** @type {string[]} */
     const filesData = [];
     for (const filename of fileNames.files) {
