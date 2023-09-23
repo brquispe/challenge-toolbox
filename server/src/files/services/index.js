@@ -88,7 +88,8 @@ class FilesService {
    */
   async getData (fileName) {
     if (fileName) {
-      return this.getFile(fileName)
+      const file = await this.getFile(fileName)
+      return this.formatFile([file]);
     }
     const fileNames = await this.getFileNames()
     /** @type {string[]} */
