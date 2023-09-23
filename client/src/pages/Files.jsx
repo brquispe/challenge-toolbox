@@ -3,11 +3,14 @@ import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { getFiles } from "../store/filesReducer";
+import { SearchBar } from "../components";
+import { useQueryParamsContext } from "../context";
 
 export const Files = () => {
   const dispatch = useDispatch();
+  const { queryParams, setQueryParam } = useQueryParamsContext();
   useEffect(() => {
-    dispatch(getFiles());
+    dispatch(getFiles(queryParams?.search));
   }, [dispatch, getFiles]);
 
   const {
@@ -15,8 +18,19 @@ export const Files = () => {
     status,
     error,
   } = useSelector((state) => state.files);
+
+  function onSearch(value) {
+    setQueryParam("search", value);
+    dispatch(getFiles(value));
+  }
+
   return (
     <div>
+      <SearchBar
+        className="mb-2 w-25"
+        onSearch={onSearch}
+        defaultValue={queryParams?.search}
+      />
       <Table responsive hover bordered striped>
         <thead className="border-0 border-bottom border-3 border-dark">
           <tr className="fw-bolder">
@@ -52,7 +66,9 @@ export const Files = () => {
           ) : null}
           {status === "failed" && error && (
             <tr>
-              <td colSpan={4} className="text-center text-danger">{error}</td>
+              <td colSpan={4} className="text-center text-danger">
+                {error}
+              </td>
             </tr>
           )}
         </tbody>

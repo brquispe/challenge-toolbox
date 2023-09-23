@@ -7,14 +7,19 @@ const INITIAL_STATE = {
   entities: [],
 };
 
-export const getFiles = createAsyncThunk("files/fetchFiles", async () => {
-  const response = await fetch(`${CONFIG.API_URL}/files/data`);
-  if (!response.ok) {
-    throw new Error("Could not fetch files");
+export const getFiles = createAsyncThunk(
+  "files/fetchFiles",
+  async (fileName) => {
+    const response = await fetch(
+      `${CONFIG.API_URL}/files/data${fileName ? `?fileName=${fileName}` : ""}`
+    );
+    if (!response.ok) {
+      throw new Error("Could not fetch files");
+    }
+    const filesData = await response.json();
+    return filesData;
   }
-  const filesData = await response.json();
-  return filesData;
-});
+);
 
 const filesSlice = createSlice({
   name: "files",
@@ -31,6 +36,7 @@ const filesSlice = createSlice({
       .addCase(getFiles.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+        state.entities = [];
       });
   },
 });
