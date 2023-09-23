@@ -1,6 +1,10 @@
+import { Layout } from "./components";
+
 const App = () => {
   return (
-    <div>App</div>
-  )
-}
+    <Layout>
+      <div>App</div>
+    </Layout>
+  );
+};
 export default App;

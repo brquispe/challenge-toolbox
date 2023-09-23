@@ -20,7 +20,10 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
+        resolve: {
+          fullySpecified: false,
+        },
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -32,6 +35,10 @@ module.exports = {
           },
         },
       },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      }
     ],
   },
   resolve: {
