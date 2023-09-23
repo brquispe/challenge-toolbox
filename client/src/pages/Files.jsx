@@ -10,8 +10,11 @@ export const Files = () => {
     dispatch(getFiles());
   }, [dispatch, getFiles]);
 
-  const { entities: files, status } = useSelector((state) => state.files);
-
+  const {
+    entities: files,
+    status,
+    error,
+  } = useSelector((state) => state.files);
   return (
     <div>
       <Table responsive hover bordered striped>
@@ -35,8 +38,8 @@ export const Files = () => {
                 </div>
               </td>
             </tr>
-          ) : (
-            files?.flatMap((file) =>
+          ) : files ? (
+            files.flatMap((file) =>
               file.lines.map(({ text, hex, number }, index) => (
                 <tr key={`${file.file + index}`}>
                   <td className="fw-bold">{file.file}</td>
@@ -46,6 +49,11 @@ export const Files = () => {
                 </tr>
               ))
             )
+          ) : null}
+          {status === "failed" && error && (
+            <tr>
+              <td colSpan={4} className="text-center text-danger">{error}</td>
+            </tr>
           )}
         </tbody>
       </Table>

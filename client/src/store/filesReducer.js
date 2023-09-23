@@ -4,21 +4,16 @@ import { CONFIG } from "../config";
 const INITIAL_STATE = {
   status: "idle",
   error: null,
-  entities: []
+  entities: [],
 };
 
 export const getFiles = createAsyncThunk("files/fetchFiles", async () => {
-  try {
-    const response = await fetch(`${CONFIG.API_URL}/files/data`);
-    console.log(response);
-    if (!response.ok) {
-      throw new Error("Could not fetch files");
-    }
-    const filesData = await response.json();
-    return filesData;
-  } catch (err) {
-    return err.message;
+  const response = await fetch(`${CONFIG.API_URL}/files/data`);
+  if (!response.ok) {
+    throw new Error("Could not fetch files");
   }
+  const filesData = await response.json();
+  return filesData;
 });
 
 const filesSlice = createSlice({
@@ -31,7 +26,11 @@ const filesSlice = createSlice({
       })
       .addCase(getFiles.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.entities = [...action.payload]
+        state.entities = [...action.payload];
+      })
+      .addCase(getFiles.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });
